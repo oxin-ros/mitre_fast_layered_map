@@ -24,13 +24,13 @@ int getParameters(ros::NodeHandle _nh, mitre_fast_layered_map::MapConfiguration&
         ROS_ERROR("No odometry sub topic set.");
         return -1;
     }
-    
+
     if (!_nh.getParam("ground_points_sub_topic", _mapConfig.groundPointSubTopic))
     {
         ROS_ERROR("No ground point sub topic set.");
         return -1;
     }
-    
+
     if (!_nh.getParam("nonground_points_sub_topic", _mapConfig.nonGroundPointSubTopic))
     {
         ROS_ERROR("No nonground points sub topic set.");
@@ -78,7 +78,7 @@ int getParameters(ros::NodeHandle _nh, mitre_fast_layered_map::MapConfiguration&
 
     // Optional parameters
     _nh.param<std::string>("map_name", _mapConfig.mapName, "Map");
-    
+
     // Empty string notifies we won't be subscribed to these
     _nh.param<std::string>("marker_sub_topic", _mapConfig.markerSubTopic, "");
     _nh.param<std::string>("static_map_sub_topic", _mapConfig.staticMapSubTopic, "");

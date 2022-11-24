@@ -27,8 +27,8 @@
 #include <grid_map_msgs/GridMap.h>
 
 // Pcl
-#include <pcl-1.7/pcl/point_cloud.h>
-#include <pcl-1.7/pcl/point_types.h>
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
 #include <pcl_conversions/pcl_conversions.h>
 
 namespace mitre_fast_layered_map
@@ -52,7 +52,7 @@ namespace mitre_fast_layered_map
         double resolution;      ///< Cell size of map
         std::string historyLayerPrefix; ///< Prefix to use for history layers
         int numHistoryLayers;   ///< Number of layers to hold for history
-        
+
 
         // VEHICLE CHARACTERISTICS
         // @TODO: Could this be pulled from the robot model automatically?
@@ -99,7 +99,7 @@ namespace mitre_fast_layered_map
                 conf1.permanentFilterProb == conf2.permanentFilterProb);
     }
 
-    typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;
+
     class SensorMap
     {
     public:
@@ -124,10 +124,10 @@ namespace mitre_fast_layered_map
         int moveMap(double, double);
 
         void groundPointCb(const sensor_msgs::PointCloud2 &);
-        int updateGroundPts(const PointCloud &);
+        int updateGroundPts(const pcl::PointCloud<pcl::PointXYZ> &);
 
         void nonGroundPointCb(const sensor_msgs::PointCloud2 &);
-        int updateNongroundPts(const PointCloud &);
+        int updateNongroundPts(const pcl::PointCloud<pcl::PointXYZ> &);
         bool pointHeightFilter(const pcl::PointXYZ, double _vehicleHeight = 0);
         bool pointBoundingBoxFilter(const pcl::PointXYZ);
 

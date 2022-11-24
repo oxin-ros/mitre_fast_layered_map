@@ -189,7 +189,7 @@ namespace mitre_fast_layered_map
      * @brief Move the center of the map to follow ego
      * @param _posX [in] Position x in map frame to move to
      * @param _posY [in] Position y in map frame to move to
-     * 
+     *
      * @return 0 on successful move, -1 on failure, 1 if map move caused jump out of mapped area
      */
     int SensorMap::moveMap(double _posX, double _posY)
@@ -235,7 +235,7 @@ namespace mitre_fast_layered_map
 
         // Calculate the current hitbox for the vehicle given its current position and orientation
         grid_map::Matrix &vehicleHitBox = gridMap_["vehicle_hitbox"];
-        vehicleHitBox.setConstant(0); 
+        vehicleHitBox.setConstant(0);
 
         try
         {
@@ -294,7 +294,7 @@ namespace mitre_fast_layered_map
         tfTransformCloud(_cloud, tfCloud, config_.mapFrameId);
 
         // Convert back to pcl cloud
-        PointCloud conCloud;
+        pcl::PointCloud<pcl::PointXYZ> conCloud;
         pcl::fromROSMsg(tfCloud, conCloud);
 
         updateGroundPts(conCloud);
@@ -305,10 +305,10 @@ namespace mitre_fast_layered_map
      * @fn SensorMap::updateGroundPts
      * @brief Records cells in the gridmap where the ground points landed.
      * @param _pointCloud [in] Point cloud of points on the ground plane
-     * 
+     *
      * @returns 0 on success, 1 if problem with filters
      */
-    int SensorMap::updateGroundPts(const PointCloud &_pointCloud)
+    int SensorMap::updateGroundPts(const pcl::PointCloud<pcl::PointXYZ> &_pointCloud)
     {
         grid_map::Matrix &ground = gridMap_["ground"];
         ground.setConstant(0.0);
@@ -354,7 +354,7 @@ namespace mitre_fast_layered_map
         sensor_msgs::PointCloud2 tfCloud;
         tfTransformCloud(_cloud, tfCloud, config_.mapFrameId);
 
-        PointCloud conCloud;
+        pcl::PointCloud<pcl::PointXYZ> conCloud;
         pcl::fromROSMsg(tfCloud, conCloud);
 
         updateNongroundPts(conCloud);
@@ -365,10 +365,10 @@ namespace mitre_fast_layered_map
      * @fn SensorMap::updateNongroundPts
      * @brief Updates cells in the map that may have nonground (obstacle) points
      * @param _pointCloud [in] The point cloud consisting of only nonground points
-     * 
+     *
      * @return 0 on success, 1 if filter failure
      */
-    int SensorMap::updateNongroundPts(const PointCloud &_pointCloud)
+    int SensorMap::updateNongroundPts(const pcl::PointCloud<pcl::PointXYZ> &_pointCloud)
     {
 
         // PROFILING: ~5ms to add lidar points
@@ -430,8 +430,8 @@ namespace mitre_fast_layered_map
         if (config_.enablePermanentObstacles)
         {
             // Add objects to permanent layer
-            grid_map::Matrix tempMat = gridMap_["current_probability"].unaryExpr([this](const float x) { 
-                if (x >= config_.permanentFilterProb) 
+            grid_map::Matrix tempMat = gridMap_["current_probability"].unaryExpr([this](const float x) {
+                if (x >= config_.permanentFilterProb)
                 {
                     return (float)100;
                 }
@@ -474,7 +474,7 @@ namespace mitre_fast_layered_map
     /**
      * @fn SensorMap::runFilter
      * @brief Run the grid map through the filter chain
-     * 
+     *
      * @return 0 on success, -1 if failure within filter chain
      */
     int SensorMap::runFilter()
@@ -490,7 +490,7 @@ namespace mitre_fast_layered_map
         }
 
         // Add any obstacles that have been determined to be permanent
-        if (config_.staticMapSubTopic != "") 
+        if (config_.staticMapSubTopic != "")
         {
             integrateStaticMap(); // Will add obstacles in static map to gridMap
         }
@@ -637,7 +637,7 @@ namespace mitre_fast_layered_map
      * @fn SensorMap::getOccupancyGrid
      * @brief Compiles the ground and nonground layers to create an occupancy grid
      * @param _mapOut [out] The occupancy grid to return
-     * 
+     *
      * @return 0
      */
     int SensorMap::getOccupancyGrid(nav_msgs::OccupancyGrid &_mapOut)
@@ -651,7 +651,7 @@ namespace mitre_fast_layered_map
     /**
      * @fn SensorMap::PublishMap
      * @brief Helper function for creating and publishing occupancy grid of the local map
-     * 
+     *
      * @return 0
      */
     int SensorMap::publishMap()
@@ -684,7 +684,7 @@ namespace mitre_fast_layered_map
      * @param _inCloud [in] The lidar point cloud in the lidars frame
      * @param _outCloud [out] The point cloud transformed into _outFrame
      * @param _outFrame [in] The frame to transform the point cloud into
-     * 
+     *
      * @return 0 on success, -1 on transform error
      */
     int SensorMap::tfTransformCloud(const sensor_msgs::PointCloud2 &_inCloud, sensor_msgs::PointCloud2 &_outCloud, std::string _outFrame)
